@@ -1,0 +1,99 @@
+#!/usr/bin/python
+
+# postfix-configurator: Wrapper start script for postfix
+#
+# chkconfig: 2345 99 01
+# description: Wrapper script for starting postfix. Before postfix
+#              starts, he will be configured by this script
+# processname: postfix-configurator
+
+# ## BEGIN INIT INFO
+# Provides:          postfix-configurator
+# Required-Start:    $local_fs $network $remote_fs
+# Required-Stop:     $local_fs $network $remote_fs
+# Should-Start:      $syslog
+# Should-Stop:       $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Configure postfix .cf files from different file sources
+# Description:       Be able to create the postfix main.cf and master.cf
+#                    configuration files from configuration snippets.
+# ## END INIT INFO
+
+import sys
+import subprocess
+
+from pfc import MainCF
+from pfc import MasterCF
+
+def process_snippets():
+    """
+    Purpose: Read all snippets and compose main.cf and master.cf
+    Results: Nothing
+    """
+
+    maincf = MainCF()
+    maincf.process()
+
+    mastercf = MasterCF()
+    mastercf.process()
+
+def err_exit(error=None):
+    """
+    Purpose: Map different error keywords to a proper exit code
+    Returns: Nothing
+    """
+
+    return_codes_nonstatus = {
+        'invalid_argument': 2,
+        'invalid_maincf': 150,
+        'invalid_mastercf': 151 }
+
+    sys.exit(return_codes_nonstatus[error])
+
+def status():
+    """
+    Purpose: Check the configuration status of the main.cf file
+             and the provided snippets
+    Results: Nothing
+    """
+
+    maincf = MainCF()
+    if maincf.diff():
+        sys.stderr.write("Current main.cf is outdated!\n")
+        err_exit('invalid_maincf')
+
+    mastercf = MasterCF()
+    if mastercf.diff():
+        sys.stderr.write("Current master.cf is outdated!\n")
+        err_exit('invalid_mastercf')
+
+def main():
+    """
+    Purpose: Generate a postfix configuration from snippets
+             under main.cf.d and master.cf.d
+    Returns: Nothing
+    """
+
+    if len(sys.argv) == 2:
+        if 'start' == sys.argv[1] or 'restart' == sys.argv[1] or 'reload' == sys.argv[1] or 'force-reload' == sys.argv[1]:
+            process_snippets()
+
+        elif 'stop' == sys.argv[1]:
+            pass
+
+        elif 'status' == sys.argv[1]:
+            status()
+
+        else:
+            sys.stderr.write("Unknown command\n")
+            err_exit(error='invalid_argument')
+
+        subprocess.call('service postfix ' + sys.argv[1], shell=True)
+
+    else:
+        print "Usage: %s start|stop|status|restart|reload|force-reload" % sys.argv[0]
+        err_exit(error='invalid_argument')
+
+if __name__ == "__main__":
+    main()
