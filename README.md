@@ -19,7 +19,7 @@ By using the directories **/etc/postfix/main.cf.d** and **/etc/postfix/master.cf
        |
        |-master.cf.d/
        |   |---- 00-default.cf
-       |   |---- 10-restrictions.cf
+       |   |---- 10-listeners.cf
        |   |---- ...
 
 An init-script will take this snippets, compose and write the **main.cf** and **master.cf** and tide over the given action to the original postfix init-script:
