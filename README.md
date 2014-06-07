@@ -30,15 +30,10 @@ So every time you make an action like *restart*, a possibly new configuration (d
 
 Installation
 ============
-Libraries
----------
+Libraries & Init-Script
+-----------------------
 
     python setup.py install
-    
-Init-Script
------------
-
-    cp init.d/postfix-configurator /etc/init.d/
 
 Usage
 =====

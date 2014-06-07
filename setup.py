@@ -10,5 +10,6 @@ setup(name='pfc-libs',
       author_email='stefan.neben@gmail.com',
       license="GPLv3",
       url='https://github.com/sneben/postfix-configurator',
+      data_files=[('/etc/init.d', ['init.d/postfix-configurator'])],
       packages=['pfc'],
       package_dir={'pfc': 'lib'})
