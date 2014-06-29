@@ -7,7 +7,7 @@
 #              starts, he will be configured by this script
 # processname: postfix-configurator
 
-# ## BEGIN INIT INFO
+### BEGIN INIT INFO
 # Provides:          postfix-configurator
 # Required-Start:    $local_fs $network $remote_fs
 # Required-Stop:     $local_fs $network $remote_fs
@@ -18,7 +18,7 @@
 # Short-Description: Configure postfix .cf files from different file sources
 # Description:       Be able to create the postfix main.cf and master.cf
 #                    configuration files from configuration snippets.
-# ## END INIT INFO
+### END INIT INFO
 
 import sys
 import subprocess
